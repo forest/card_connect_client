@@ -17,7 +17,13 @@ defmodule CardConnectClient.MixProject do
       start_permanent: Mix.env() == :prod,
       name: @name,
       source_url: @repo_url,
-      deps: deps()
+      deps: deps(),
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.github": :test,
+        "coveralls.html": :test
+      ]
     ]
   end
 
@@ -35,7 +41,8 @@ defmodule CardConnectClient.MixProject do
       {:finch, "~> 0.3"},
       {:nimble_options, "~> 0.2.0"},
       {:bypass, "~> 2.0", only: :test},
-      {:credo, "~> 1.3", only: [:dev, :test]}
+      {:credo, "~> 1.3", only: [:dev, :test]},
+      {:excoveralls, "~> 0.10", only: :test}
     ]
   end
 
