@@ -44,7 +44,7 @@ The package can be installed by adding `card_connect_client` to your list of dep
 ```elixir
 def deps do
   [
-    {:card_connect_client, "~> 0.1"}
+    {:card_connect_client, "~> 0.2"}
   ]
 end
 ```

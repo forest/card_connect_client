@@ -2,7 +2,7 @@ defmodule CardConnectClient.GatewayClient do
   @moduledoc false
   use GenServer
 
-  alias CardConnectClient.{Authorization, CheckCredentials}
+  alias CardConnectClient.GatewayAPI
 
   def child_spec(opts) do
     %{
@@ -23,34 +23,23 @@ defmodule CardConnectClient.GatewayClient do
     {:ok, config}
   end
 
-  def authorize_transaction(server, params) do
-    GenServer.call(server, {:authorize_transaction, params})
-  end
-
   def check_credentials(server, body) do
     GenServer.call(server, {:check_credentials, body})
   end
 
+  def authorize_transaction(server, body) do
+    GenServer.call(server, {:authorize_transaction, body})
+  end
+
   def handle_call({:check_credentials, body}, _from, state) do
-    response = CheckCredentials.request(request_config(state), body)
+    response = GatewayAPI.check_credentials(state, body)
 
     {:reply, response, state}
   end
 
-  def handle_call({:authorize_transaction, params}, _from, state) do
-    response = Authorization.request(request_config(state), params)
+  def handle_call({:authorize_transaction, body}, _from, state) do
+    response = GatewayAPI.authorize_transaction(state, body)
 
     {:reply, response, state}
-  end
-
-  defp basic_auth_header(%{username: username, password: password}) do
-    {"Authorization", "Basic " <> Base.encode64("#{username}:#{password}")}
-  end
-
-  defp content_type_header, do: {"Content-Type", "application/json"}
-
-  defp request_config(%{http_client_name: name, base_url: base_url} = state) do
-    headers = [basic_auth_header(state), content_type_header()]
-    %{name: name, base_url: base_url, headers: headers}
   end
 end

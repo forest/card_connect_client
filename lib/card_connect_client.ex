@@ -66,12 +66,12 @@ defmodule CardConnectClient do
     Supervisor.init(children, strategy: :one_for_one)
   end
 
-  def authorize_transaction(name, params) do
-    GatewayClient.authorize_transaction(gateway_client_name(name), params)
-  end
-
   def check_credentials(name, body) do
     GatewayClient.check_credentials(gateway_client_name(name), body)
+  end
+
+  def authorize_transaction(name, body) do
+    GatewayClient.authorize_transaction(gateway_client_name(name), body)
   end
 
   defp gateway_options!(opts) do
@@ -111,8 +111,8 @@ defmodule CardConnectClient do
 
       def check_credentials(body), do: CardConnectClient.check_credentials(__MODULE__, body)
 
-      def authorize_transaction(params),
-        do: CardConnectClient.authorize_transaction(__MODULE__, params)
+      def authorize_transaction(body),
+        do: CardConnectClient.authorize_transaction(__MODULE__, body)
     end
   end
 end
