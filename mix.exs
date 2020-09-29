@@ -2,8 +2,8 @@ defmodule CardConnectClient.MixProject do
   use Mix.Project
 
   @name "CardConnectClient"
-  @version "0.1.0"
-  @repo_url "https://github.com/forest/card_connect_client"
+  @version "0.2.0"
+  @repo_url "https://github.com/forest/card-connect-client"
 
   def project do
     [
@@ -55,7 +55,6 @@ defmodule CardConnectClient.MixProject do
 
   def docs do
     [
-      logo: "assets/logo.png",
       source_ref: "v#{@version}",
       source_url: @repo_url,
       main: @name
