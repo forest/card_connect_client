@@ -4,6 +4,9 @@ defmodule CardConnectClient.GatewayClient do
 
   alias CardConnectClient.GatewayAPI
 
+  # https://developer.cardconnect.com/guides/cardpointe-gateway#cardPointe-gateway-authorization-timeout
+  @authorization_timeout 35000
+
   def child_spec(opts) do
     %{
       id: opts[:name],
@@ -28,7 +31,7 @@ defmodule CardConnectClient.GatewayClient do
   end
 
   def authorize_transaction(server, body) do
-    GenServer.call(server, {:authorize_transaction, body})
+    GenServer.call(server, {:authorize_transaction, body}, @authorization_timeout)
   end
 
   def handle_call({:check_credentials, body}, _from, state) do
