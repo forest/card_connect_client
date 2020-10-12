@@ -1,3 +1,10 @@
+## [0.2.2](https://github.com/forest/card-connect-client/compare/v0.2.1...v0.2.2) (2020-10-12)
+
+
+### Bug Fixes
+
+* need to extend the Finch timeout as well ([29433e0](https://github.com/forest/card-connect-client/commit/29433e0860eaf2360f2749668113af189dc5ddde))
+
 ## [0.2.1](https://github.com/forest/card-connect-client/compare/v0.2.0...v0.2.1) (2020-10-12)
 
 
