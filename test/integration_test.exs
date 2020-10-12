@@ -72,6 +72,23 @@ defmodule IntegrationTest do
                 "resptext" => "Invalid card"
               }} = TestPaymentClient.authorize_transaction(bad_trxn_request)
     end
+
+    @tag slow: true
+    test "fails request, with retry", %{gateway_options: opts} do
+      start_supervised!({TestPaymentClient, opts})
+
+      bad_trxn_request = trxn_request() |> Map.put(:account, "4999006200620062")
+
+      assert {:ok,
+              %{
+                "amount" => "0.00",
+                "expiry" => "0925",
+                "merchid" => "800000009033",
+                "respcode" => "62",
+                "respstat" => "B",
+                "resptext" => "Timed out"
+              }} = TestPaymentClient.authorize_transaction(bad_trxn_request)
+    end
   end
 
   defp trxn_request,

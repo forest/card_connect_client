@@ -41,7 +41,8 @@ defmodule CardConnectClient.GatewayClient do
   end
 
   def handle_call({:authorize_transaction, body}, _from, state) do
-    response = GatewayAPI.authorize_transaction(state, body)
+    response =
+      GatewayAPI.authorize_transaction(state, body, receive_timeout: @authorization_timeout)
 
     {:reply, response, state}
   end

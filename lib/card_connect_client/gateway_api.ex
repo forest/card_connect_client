@@ -9,10 +9,10 @@ defmodule CardConnectClient.GatewayAPI do
     end
   end
 
-  def authorize_transaction(config, body) do
+  def authorize_transaction(config, body, opts \\ []) do
     request = build_request(config, :put, "/auth", body)
 
-    with {:ok, resp} <- make_request(config, request) do
+    with {:ok, resp} <- make_request(config, request, opts) do
       case Jason.decode(resp.body) do
         {:ok, json} ->
           {:ok, json}
@@ -30,10 +30,10 @@ defmodule CardConnectClient.GatewayAPI do
     Finch.build(method, base_url <> path, headers, Jason.encode!(body))
   end
 
-  defp make_request(config, request) do
+  defp make_request(config, request, opts \\ []) do
     name = http_client_name_from_config(config)
 
-    Finch.request(request, name)
+    Finch.request(request, name, opts)
   end
 
   defp base_url_from_config(%{base_url: base_url}), do: base_url
