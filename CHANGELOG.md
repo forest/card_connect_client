@@ -1,3 +1,10 @@
+# [0.3.0](https://github.com/forest/card-connect-client/compare/v0.2.2...v0.3.0) (2020-10-13)
+
+
+### Features
+
+* switch to passing gateway creds in each call to support more flexible usage ([2c3549a](https://github.com/forest/card-connect-client/commit/2c3549ac4f403889639fdef37bc77f2cea2f014d))
+
 ## [0.2.2](https://github.com/forest/card-connect-client/compare/v0.2.1...v0.2.2) (2020-10-12)
 
 
