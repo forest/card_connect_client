@@ -9,27 +9,27 @@ defmodule IntegrationTest do
 
   describe "check credentials" do
     test "successful request, with basic auth header", %{gateway_options: opts} do
-      start_supervised!({TestPaymentClient, opts})
+      start_supervised!({TestPaymentClient, []})
 
       assert {:ok, %{status: 200, body: body}} =
-               TestPaymentClient.check_credentials(%{merchid: "800000009033"})
+               TestPaymentClient.check_credentials(%{merchid: "800000009033"}, opts)
 
       assert body =~ ~r/CardConnect REST Servlet/
     end
 
     test "fails request, with bad basic auth header", %{gateway_options: opts} do
-      opts = put_in(opts, [:gateway, :password], "badbad")
+      opts = put_in(opts, [:password], "badbad")
 
-      start_supervised!({TestPaymentClient, opts})
+      start_supervised!({TestPaymentClient, []})
 
       assert {:ok, %{status: 401}} =
-               TestPaymentClient.check_credentials(%{merchid: "800000009033"})
+               TestPaymentClient.check_credentials(%{merchid: "800000009033"}, opts)
     end
   end
 
   describe "authorization" do
     test "successful request, with valid transaction details", %{gateway_options: opts} do
-      start_supervised!({TestPaymentClient, opts})
+      start_supervised!({TestPaymentClient, []})
 
       assert {:ok,
               %{
@@ -38,26 +38,28 @@ defmodule IntegrationTest do
                 "merchid" => "800000009033",
                 "respcode" => "000",
                 "respstat" => "A"
-              }} = TestPaymentClient.authorize_transaction(trxn_request())
+              }} = TestPaymentClient.authorize_transaction(trxn_request(), opts)
     end
 
     test "fails request, with bad basic auth header", %{gateway_options: opts} do
-      opts = put_in(opts, [:gateway, :password], "badbad")
-      start_supervised!({TestPaymentClient, opts})
+      opts = put_in(opts, [:password], "badbad")
+      start_supervised!({TestPaymentClient, []})
 
-      assert {:error, %{status: 401}} = TestPaymentClient.authorize_transaction(trxn_request())
+      assert {:error, %{status: 401}} =
+               TestPaymentClient.authorize_transaction(trxn_request(), opts)
     end
 
     test "fails request, with bad merchid", %{gateway_options: opts} do
-      start_supervised!({TestPaymentClient, opts})
+      start_supervised!({TestPaymentClient, []})
 
       bad_trxn_request = trxn_request() |> Map.put(:merchid, "larry")
 
-      assert {:error, %{status: 401}} = TestPaymentClient.authorize_transaction(bad_trxn_request)
+      assert {:error, %{status: 401}} =
+               TestPaymentClient.authorize_transaction(bad_trxn_request, opts)
     end
 
     test "fails request, with bad data", %{gateway_options: opts} do
-      start_supervised!({TestPaymentClient, opts})
+      start_supervised!({TestPaymentClient, []})
 
       bad_trxn_request = trxn_request() |> Map.put(:account, "larry")
 
@@ -70,12 +72,12 @@ defmodule IntegrationTest do
                 "respcode" => "11",
                 "respstat" => "C",
                 "resptext" => "Invalid card"
-              }} = TestPaymentClient.authorize_transaction(bad_trxn_request)
+              }} = TestPaymentClient.authorize_transaction(bad_trxn_request, opts)
     end
 
     @tag slow: true
     test "fails request, with retry", %{gateway_options: opts} do
-      start_supervised!({TestPaymentClient, opts})
+      start_supervised!({TestPaymentClient, []})
 
       bad_trxn_request = trxn_request() |> Map.put(:account, "4999006200620062")
 
@@ -87,7 +89,7 @@ defmodule IntegrationTest do
                 "respcode" => "62",
                 "respstat" => "B",
                 "resptext" => "Timed out"
-              }} = TestPaymentClient.authorize_transaction(bad_trxn_request)
+              }} = TestPaymentClient.authorize_transaction(bad_trxn_request, opts)
     end
   end
 
@@ -101,7 +103,7 @@ defmodule IntegrationTest do
     }
 
   defp gateway_options(base_url),
-    do: [gateway: [base_url: base_url, username: "testing", password: "testing123"]]
+    do: [base_url: base_url, username: "testing", password: "testing123"]
 
   defp base_url(), do: "https://fts-uat.cardconnect.com/cardconnect/rest"
 end

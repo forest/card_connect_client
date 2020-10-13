@@ -37,19 +37,12 @@ defmodule CardConnectClient do
   ## Options
 
     * `:name` - The name of your CardConnectClient instance. This field is required.
-
-    ### Gateway Configurations
-
-  #{NimbleOptions.docs(@gateway_config_schema)}
   """
   def start_link(opts) do
     name = opts[:name] || raise ArgumentError, "must supply a name"
 
-    gateway_config = Keyword.get(opts, :gateway, []) |> gateway_options!()
-
     config = %{
       http_client_name: http_client_name(name),
-      gateway_config: gateway_config,
       gateway_client_name: gateway_client_name(name)
     }
 
@@ -66,12 +59,26 @@ defmodule CardConnectClient do
     Supervisor.init(children, strategy: :one_for_one)
   end
 
-  def check_credentials(name, body) do
-    GatewayClient.check_credentials(gateway_client_name(name), body)
+  @doc """
+  Check gateway credentials.
+
+  ## Gateway Configurations
+
+  #{NimbleOptions.docs(@gateway_config_schema)}
+  """
+  def check_credentials(name, body, opts) do
+    GatewayClient.check_credentials(gateway_client_name(name), body, gateway_options!(opts))
   end
 
-  def authorize_transaction(name, body) do
-    GatewayClient.authorize_transaction(gateway_client_name(name), body)
+  @doc """
+  Authorize transaction.
+
+  ## Gateway Configurations
+
+  #{NimbleOptions.docs(@gateway_config_schema)}
+  """
+  def authorize_transaction(name, body, opts) do
+    GatewayClient.authorize_transaction(gateway_client_name(name), body, gateway_options!(opts))
   end
 
   defp gateway_options!(opts) do
@@ -109,10 +116,11 @@ defmodule CardConnectClient do
         CardConnectClient.start_link(opts)
       end
 
-      def check_credentials(body), do: CardConnectClient.check_credentials(__MODULE__, body)
+      def check_credentials(body, opts),
+        do: CardConnectClient.check_credentials(__MODULE__, body, opts)
 
-      def authorize_transaction(body),
-        do: CardConnectClient.authorize_transaction(__MODULE__, body)
+      def authorize_transaction(body, opts),
+        do: CardConnectClient.authorize_transaction(__MODULE__, body, opts)
     end
   end
 end
