@@ -38,8 +38,8 @@ defmodule CardConnectClient.MixProject do
 
   defp deps do
     [
-      {:finch, "~> 0.3"},
-      {:nimble_options, "~> 0.2.0"},
+      {:finch, "~> 0.5"},
+      {:nimble_options, "~> 0.3"},
       {:bypass, "~> 2.0", only: :test},
       {:credo, "~> 1.3", only: [:dev, :test]},
       {:excoveralls, "~> 0.10", only: :test}

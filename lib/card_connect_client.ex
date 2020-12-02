@@ -86,9 +86,9 @@ defmodule CardConnectClient do
       {:ok, valid} ->
         valid_gateway_opts_to_map(valid)
 
-      {:error, reason} ->
+      {:error, %NimbleOptions.ValidationError{} = error} ->
         raise ArgumentError,
-              "got invalid configuration for gateway: #{inspect(reason)}"
+              "got invalid configuration for gateway: #{Exception.message(error)}"
     end
   end
 

@@ -27,7 +27,7 @@ defmodule CardConnectClientTest do
         end
       )
 
-      assert_raise(ArgumentError, ~r/expected :base_url to be an string/, fn ->
+      assert_raise(ArgumentError, ~r/expected :base_url to be a string/, fn ->
         TestPaymentClient.check_credentials(%{merchid: "800000009033"}, base_url: 5)
       end)
     end
