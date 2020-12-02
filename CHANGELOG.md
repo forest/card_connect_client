@@ -1,3 +1,10 @@
+## [0.3.1](https://github.com/forest/card-connect-client/compare/v0.3.0...v0.3.1) (2020-12-02)
+
+
+### Bug Fixes
+
+* update version of finch and nimble_options ([ae8f906](https://github.com/forest/card-connect-client/commit/ae8f906ab7afe44904ae79349bcb55b0c5ce06eb))
+
 # [0.3.0](https://github.com/forest/card-connect-client/compare/v0.2.2...v0.3.0) (2020-10-13)
 
 
