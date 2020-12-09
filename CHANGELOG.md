@@ -1,3 +1,10 @@
+## [0.3.2](https://github.com/forest/card-connect-client/compare/v0.3.1...v0.3.2) (2020-12-09)
+
+
+### Bug Fixes
+
+* add missing jason dep ([438dc16](https://github.com/forest/card-connect-client/commit/438dc1694b00521ac0494a89f19a269013ee43e1))
+
 ## [0.3.1](https://github.com/forest/card-connect-client/compare/v0.3.0...v0.3.1) (2020-12-02)
 
 
