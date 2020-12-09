@@ -5,7 +5,7 @@ defmodule CardConnectClient.GatewayClient do
   alias CardConnectClient.GatewayAPI
 
   # https://developer.cardconnect.com/guides/cardpointe-gateway#cardPointe-gateway-authorization-timeout
-  @authorization_timeout 35000
+  @authorization_timeout 35_000
 
   def child_spec(opts) do
     %{

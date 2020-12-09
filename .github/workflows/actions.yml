@@ -15,48 +15,63 @@ jobs:
   build:
     name: Build & Test
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        elixir: ["1.10", "1.11"]
+        otp: ["23.1"]
+
     outputs:
       nextversion: ${{ steps.getnextversion.outputs.nextversion }}
 
     steps:
       - uses: actions/checkout@v2
+
       - name: Set up Elixir
         uses: actions/setup-elixir@v1
         with:
-          elixir-version: "1.10.4" # Define the elixir version [required]
-          otp-version: "22.3" # Define the OTP version [required]
+          elixir-version: ${{ matrix.elixir }} # Define the elixir version [required]
+          otp-version: ${{ matrix.otp }}
+
       - name: Restore dependencies cache
         uses: actions/cache@v2
         with:
+          key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
           path: deps
-          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-mix-
+
       - name: Restore build cache
         uses: actions/cache@v2
         with:
-          path: _build/test/
-          key: ${{ runner.os }}-build-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-build-
+          key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+          path: _build
+
       - name: Install dependencies
         run: |
           mix deps.get
+
       - name: Credo review
         uses: red-shirts/reviewdog-action-credo@v1
         with:
           github_token: ${{ secrets.github_token }}
           level: error
           reporter: github-pr-review
+
       - name: Credo check
-        # run: mix credo --strict
         uses: red-shirts/reviewdog-action-credo@v1
         with:
           github_token: ${{ secrets.github_token }}
           level: error
           reporter: github-pr-check
+
       - name: Check code format
         run: mix format --check-formatted
+
+      - name: Check for unused deps
+        run: mix deps.unlock --check-unused
+
       - name: Run tests
         run: mix coveralls.github
+
         # https://github.com/marketplace/actions/action-for-semantic-release
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v2
@@ -82,6 +97,7 @@ jobs:
             @semantic-release/changelog
             @semantic-release/github
             @semantic-release/git
+
       - name: Output next release version
         id: getnextversion
         run: |

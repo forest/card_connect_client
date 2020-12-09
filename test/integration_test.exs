@@ -105,5 +105,5 @@ defmodule IntegrationTest do
   defp gateway_options(base_url),
     do: [base_url: base_url, username: "testing", password: "testing123"]
 
-  defp base_url(), do: "https://fts-uat.cardconnect.com/cardconnect/rest"
+  defp base_url, do: "https://fts-uat.cardconnect.com/cardconnect/rest"
 end
