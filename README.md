@@ -22,16 +22,14 @@ CardConnectClient.start_link(name: MyPaymentClient)
 Once you have started your instance of CardConnectClient, you are ready to start making requests:
 
 ```elixir
-CardConnectClient.build(:get, "https://hex.pm") |> CardConnectClient.request(MyPaymentClient)
+MyPaymentClient.authorize_transaction(request, configs)
 ```
 
 You can also configure stuff. See `CardConnectClient.start_link/1` for configuration options.
 
 ```elixir
 children = [
-  {CardConnectClient,
-   name: MyConfiguredPaymentClient,
-   token: "my-token"}
+  {CardConnectClient, name: MyConfiguredPaymentClient}
 ]
 ```
 
