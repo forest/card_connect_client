@@ -1,3 +1,20 @@
+# [0.4.0](https://github.com/forest/card_connect_client/compare/v0.3.2...v0.4.0) (2021-06-08)
+
+
+### Chores
+
+* need to seperate semantic release from build to support matrix ([c840b8c](https://github.com/forest/card_connect_client/commit/c840b8caed5cce956cf6e1aa31bf0530223b1222))
+
+
+### Documentation
+
+* readme update ([c08cb5a](https://github.com/forest/card_connect_client/commit/c08cb5ad9d087e914ff133369c46fc216b4992c2))
+
+
+### Features
+
+* support OTP 24 and Elixir 1.12 ([a9d2ff7](https://github.com/forest/card_connect_client/commit/a9d2ff77ac1bb04b135784fcd49e60f2a41add86))
+
 ## [0.3.2](https://github.com/forest/card-connect-client/compare/v0.3.1...v0.3.2) (2020-12-09)
 
 
