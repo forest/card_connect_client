@@ -1,4 +1,5 @@
 direnv 2.21.3
-erlang 23.1
-elixir 1.11.2
-nodejs 12.11.1
+erlang 24.0.2
+#erlang 23.1
+elixir 1.12.1-otp-24
+#elixir 1.11.3

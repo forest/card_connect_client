@@ -18,8 +18,13 @@ jobs:
 
     strategy:
       matrix:
-        elixir: ["1.11"] # "1.10"
-        otp: ["23.1"]
+        include:
+          - pair:
+              elixir: '1.11.4'
+              otp: '23.x'
+          - pair:
+              elixir: '1.12.x'
+              otp: '24.x'
 
     outputs:
       nextversion: ${{ steps.getnextversion.outputs.nextversion }}
@@ -28,10 +33,10 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Set up Elixir
-        uses: actions/setup-elixir@v1
+        uses: erlef/setup-beam@v1
         with:
-          elixir-version: ${{ matrix.elixir }} # Define the elixir version [required]
-          otp-version: ${{ matrix.otp }}
+          otp-version: ${{matrix.pair.otp}}
+          elixir-version: ${{matrix.pair.elixir}}
 
       - name: Restore dependencies cache
         uses: actions/cache@v2
