@@ -5,7 +5,7 @@ defmodule CardConnectClient.GatewayClient do
   alias CardConnectClient.GatewayAPI
 
   # https://developer.cardconnect.com/guides/cardpointe-gateway#cardPointe-gateway-authorization-timeout
-  @authorization_timeout 35_000
+  @gateway_timeout 35_000
 
   def child_spec(opts) do
     %{
@@ -29,7 +29,11 @@ defmodule CardConnectClient.GatewayClient do
   end
 
   def authorize_transaction(server, body, opts) do
-    GenServer.call(server, {:authorize_transaction, body, opts}, @authorization_timeout)
+    GenServer.call(server, {:authorize_transaction, body, opts}, @gateway_timeout)
+  end
+
+  def inquire(server, retref, merchid, opts) do
+    GenServer.call(server, {:inquire, retref, merchid, opts}, @gateway_timeout)
   end
 
   def handle_call({:check_credentials, body, opts}, _from, state) do
@@ -41,7 +45,16 @@ defmodule CardConnectClient.GatewayClient do
   def handle_call({:authorize_transaction, body, opts}, _from, state) do
     response =
       GatewayAPI.authorize_transaction(gateway_config(opts, state), body,
-        receive_timeout: @authorization_timeout
+        receive_timeout: @gateway_timeout
+      )
+
+    {:reply, response, state}
+  end
+
+  def handle_call({:inquire, retref, merchid, opts}, _from, state) do
+    response =
+      GatewayAPI.inquire(gateway_config(opts, state), retref, merchid,
+        receive_timeout: @gateway_timeout
       )
 
     {:reply, response, state}

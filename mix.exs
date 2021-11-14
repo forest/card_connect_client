@@ -2,7 +2,7 @@ defmodule CardConnectClient.MixProject do
   use Mix.Project
 
   @name "CardConnectClient"
-  @version "0.4.0"
+  @version "0.5.0"
   @repo_url "https://github.com/forest/card-connect-client"
 
   def project do

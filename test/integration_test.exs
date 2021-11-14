@@ -93,6 +93,22 @@ defmodule IntegrationTest do
     end
   end
 
+  describe "inquire" do
+    test "successful request, with exisiting transaction", %{gateway_options: opts} do
+      start_supervised!({TestPaymentClient, []})
+
+      assert {:ok,
+              %{
+                "merchid" => merchid,
+                "retref" => retref,
+                "respstat" => "A"
+              }} = TestPaymentClient.authorize_transaction(trxn_request(), opts)
+
+      assert {:ok, %{"retref" => ^retref, "setlstat" => "Authorized"}} =
+               TestPaymentClient.inquire(retref, merchid, opts)
+    end
+  end
+
   defp trxn_request,
     do: %{
       merchid: "800000009033",

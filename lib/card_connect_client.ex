@@ -81,6 +81,19 @@ defmodule CardConnectClient do
     GatewayClient.authorize_transaction(gateway_client_name(name), body, gateway_options!(opts))
   end
 
+  @doc """
+  The inquire service returns information for an individual transaction,
+  including its settlement status (setlstat) and the response codes from
+  the initial authorization.
+
+  ## Gateway Configurations
+
+  #{NimbleOptions.docs(@gateway_config_schema)}
+  """
+  def inquire(name, retref, merchid, opts) do
+    GatewayClient.inquire(gateway_client_name(name), retref, merchid, gateway_options!(opts))
+  end
+
   defp gateway_options!(opts) do
     case NimbleOptions.validate(opts, @gateway_config_schema) do
       {:ok, valid} ->
@@ -121,6 +134,9 @@ defmodule CardConnectClient do
 
       def authorize_transaction(body, opts),
         do: CardConnectClient.authorize_transaction(__MODULE__, body, opts)
+
+      def inquire(retref, merchid, opts),
+        do: CardConnectClient.inquire(__MODULE__, retref, merchid, opts)
     end
   end
 end

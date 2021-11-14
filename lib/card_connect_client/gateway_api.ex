@@ -23,7 +23,28 @@ defmodule CardConnectClient.GatewayAPI do
     end
   end
 
-  defp build_request(config, method, path, body) when is_atom(method) do
+  def inquire(config, retref, merchid, opts \\ []) do
+    request = build_request(config, :get, "/inquire/#{retref}/#{merchid}")
+
+    with {:ok, resp} <- make_request(config, request, opts) do
+      case Jason.decode(resp.body) do
+        {:ok, json} ->
+          {:ok, json}
+
+        {:error, _} ->
+          {:error, Map.from_struct(resp)}
+      end
+    end
+  end
+
+  defp build_request(config, method, path) do
+    base_url = base_url_from_config(config)
+    headers = headers_from_config(config)
+
+    Finch.build(method, base_url <> path, headers)
+  end
+
+  defp build_request(config, method, path, body) do
     base_url = base_url_from_config(config)
     headers = headers_from_config(config)
 
