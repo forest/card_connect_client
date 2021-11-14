@@ -1,3 +1,10 @@
+# [0.5.0](https://github.com/forest/card_connect_client/compare/v0.4.0...v0.5.0) (2021-11-14)
+
+
+### Features
+
+* added support for the inquire service ([63ad899](https://github.com/forest/card_connect_client/commit/63ad8991bdd8ddea109f129b98629d7765a44135))
+
 # [0.4.0](https://github.com/forest/card_connect_client/compare/v0.3.2...v0.4.0) (2021-06-08)
 
 
