@@ -1,3 +1,15 @@
+# [0.6.0](https://github.com/forest/card_connect_client/compare/v0.5.0...v0.6.0) (2022-01-02)
+
+
+### Chores
+
+* update ci ([910b304](https://github.com/forest/card_connect_client/commit/910b304e2f38283417d8f545b8f4de1970299c53))
+
+
+### Features
+
+* make sure call timeout is longer than gateway timeout and better errors ([9ce0e23](https://github.com/forest/card_connect_client/commit/9ce0e236cdc961e4c63e5c51897581980551cf3c))
+
 # [0.5.0](https://github.com/forest/card_connect_client/compare/v0.4.0...v0.5.0) (2021-11-14)
 
 
