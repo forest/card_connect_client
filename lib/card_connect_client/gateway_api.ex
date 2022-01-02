@@ -1,6 +1,8 @@
 defmodule CardConnectClient.GatewayAPI do
   @moduledoc false
 
+  alias CardConnectClient.Error
+
   def check_credentials(config, body) do
     request = build_request(config, :put, "/", body)
 
@@ -12,13 +14,13 @@ defmodule CardConnectClient.GatewayAPI do
   def authorize_transaction(config, body, opts \\ []) do
     request = build_request(config, :put, "/auth", body)
 
-    with {:ok, resp} <- make_request(config, request, opts) do
+    with {:ok, %Finch.Response{} = resp} <- make_request(config, request, opts) do
       case Jason.decode(resp.body) do
         {:ok, json} ->
           {:ok, json}
 
         {:error, _} ->
-          {:error, Map.from_struct(resp)}
+          {:error, Error.http_status(resp.status)}
       end
     end
   end
@@ -26,13 +28,13 @@ defmodule CardConnectClient.GatewayAPI do
   def inquire(config, retref, merchid, opts \\ []) do
     request = build_request(config, :get, "/inquire/#{retref}/#{merchid}")
 
-    with {:ok, resp} <- make_request(config, request, opts) do
+    with {:ok, %Finch.Response{} = resp} <- make_request(config, request, opts) do
       case Jason.decode(resp.body) do
         {:ok, json} ->
           {:ok, json}
 
         {:error, _} ->
-          {:error, Map.from_struct(resp)}
+          {:error, Error.http_status(resp.status)}
       end
     end
   end
@@ -54,7 +56,18 @@ defmodule CardConnectClient.GatewayAPI do
   defp make_request(config, request, opts \\ []) do
     name = http_client_name_from_config(config)
 
-    Finch.request(request, name, opts)
+    response = Finch.request(request, name, opts)
+
+    case response do
+      {:ok, _} ->
+        response
+
+      {:error, %{reason: reason} = error} ->
+        {:error, Error.new(reason, Exception.message(error))}
+
+      {:error, error} ->
+        {:error, Error.internal(Exception.message(error))}
+    end
   end
 
   defp base_url_from_config(%{base_url: base_url}), do: base_url

@@ -2,7 +2,7 @@ defmodule CardConnectClient.MixProject do
   use Mix.Project
 
   @name "CardConnectClient"
-  @version "0.5.0"
+  @version "0.6.0"
   @repo_url "https://github.com/forest/card-connect-client"
 
   def project do
@@ -40,7 +40,8 @@ defmodule CardConnectClient.MixProject do
     [
       {:finch, "~> 0.7.0"},
       {:nimble_options, "~> 0.3"},
-      {:jason, "~> 1.0"},
+      {:jason, "~> 1.2"},
+      {:plug, "~> 1.12"},
       {:bypass, "~> 2.1", only: :test},
       {:credo, "~> 1.5", only: [:dev, :test]},
       {:excoveralls, "~> 0.14", only: :test}
