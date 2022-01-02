@@ -27,7 +27,8 @@ jobs:
               otp: '24.x'
 
     outputs:
-      nextversion: ${{ steps.getnextversion.outputs.nextversion }}
+      new_release_published: ${{ steps.semantic.outputs.new_release_published }}
+      new_release_version: ${{ steps.semantic.outputs.new_release_version }}
 
     steps:
       - uses: actions/checkout@v2
@@ -79,9 +80,10 @@ jobs:
 
         # https://github.com/marketplace/actions/action-for-semantic-release
       - name: Semantic Release
+        id: semantic
         uses: cycjimmy/semantic-release-action@v2
         with:
-          semantic_version: 16
+          semantic_version: 18.0.1
           branches: |
             [
               '+([0-9])?(.{+([0-9]),x}).x',
@@ -98,19 +100,5 @@ jobs:
               }
             ]
           extra_plugins: |
-            @semantic-release/exec
-            @semantic-release/changelog
-            @semantic-release/github
-            @semantic-release/git
-
-      - name: Output next release version
-        id: getnextversion
-        run: |
-          if [ -f "version" ]; then
-            VERSION=`cat version`
-            echo "::set-output name=nextversion::$VERSION"
-          else
-            VERSION=''
-            echo "Next release version not set. No release."
-          fi
-          echo "::set-output name=nextversion::$VERSION"
+            @semantic-release/changelog@6.0.1
+            @semantic-release/git@10.0.1
