@@ -45,8 +45,11 @@ defmodule IntegrationTest do
       opts = put_in(opts, [:password], "badbad")
       start_supervised!({TestPaymentClient, []})
 
-      assert {:error, %{status: 401}} =
-               TestPaymentClient.authorize_transaction(trxn_request(), opts)
+      assert {:error,
+              %CardConnectClient.Error{
+                message: "Unauthorized",
+                reason: :unauthorized
+              }} = TestPaymentClient.authorize_transaction(trxn_request(), opts)
     end
 
     test "fails request, with bad merchid", %{gateway_options: opts} do
@@ -54,8 +57,11 @@ defmodule IntegrationTest do
 
       bad_trxn_request = trxn_request() |> Map.put(:merchid, "larry")
 
-      assert {:error, %{status: 401}} =
-               TestPaymentClient.authorize_transaction(bad_trxn_request, opts)
+      assert {:error,
+              %CardConnectClient.Error{
+                message: "Unauthorized",
+                reason: :unauthorized
+              }} = TestPaymentClient.authorize_transaction(bad_trxn_request, opts)
     end
 
     test "fails request, with bad data", %{gateway_options: opts} do
@@ -81,6 +87,8 @@ defmodule IntegrationTest do
 
       bad_trxn_request = trxn_request() |> Map.put(:account, "4999006200620062")
 
+      response = TestPaymentClient.authorize_transaction(bad_trxn_request, opts)
+
       assert {:ok,
               %{
                 "amount" => "0.00",
@@ -89,7 +97,7 @@ defmodule IntegrationTest do
                 "respcode" => "62",
                 "respstat" => "B",
                 "resptext" => "Timed out"
-              }} = TestPaymentClient.authorize_transaction(bad_trxn_request, opts)
+              }} = response
     end
   end
 
