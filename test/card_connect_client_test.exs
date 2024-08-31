@@ -27,9 +27,13 @@ defmodule CardConnectClientTest do
         end
       )
 
-      assert_raise(ArgumentError, ~r/expected :base_url to be a string/, fn ->
-        TestPaymentClient.check_credentials(%{merchid: "800000009033"}, base_url: 5)
-      end)
+      assert_raise(
+        ArgumentError,
+        ~r/got invalid configuration for gateway: invalid value for :base_url option: expected string, got: 5/,
+        fn ->
+          TestPaymentClient.check_credentials(%{merchid: "800000009033"}, base_url: 5)
+        end
+      )
     end
   end
 
