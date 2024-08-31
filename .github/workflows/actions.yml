@@ -20,11 +20,11 @@ jobs:
       matrix:
         include:
           - pair:
-              elixir: '1.11.4'
-              otp: '23.x'
-          - pair:
               elixir: '1.12.x'
               otp: '24.x'
+          - pair:
+              elixir: '1.17.2'
+              otp: '27.x'
 
     outputs:
       new_release_published: ${{ steps.semantic.outputs.new_release_published }}
