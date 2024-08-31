@@ -1,3 +1,10 @@
+## [0.6.1](https://github.com/forest/card_connect_client/compare/v0.6.0...v0.6.1) (2024-08-31)
+
+
+### Bug Fixes
+
+* update deps (#3) ([9205d1c](https://github.com/forest/card_connect_client/commit/9205d1c4e557b9cbe528e25c223244e7c1f54e85)), closes [#3](https://github.com/forest/card_connect_client/issues/3)
+
 # [0.6.0](https://github.com/forest/card_connect_client/compare/v0.5.0...v0.6.0) (2022-01-02)
 
 
