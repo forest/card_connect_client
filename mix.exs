@@ -18,8 +18,13 @@ defmodule CardConnectClient.MixProject do
       name: @name,
       source_url: @repo_url,
       deps: deps(),
-      test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: [
+      test_coverage: [tool: ExCoveralls]
+    ]
+  end
+
+  def cli do
+    [
+      preferred_envs: [
         coveralls: :test,
         "coveralls.github": :test,
         "coveralls.html": :test
