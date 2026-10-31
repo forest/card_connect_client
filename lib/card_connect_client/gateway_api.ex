@@ -15,13 +15,7 @@ defmodule CardConnectClient.GatewayAPI do
     request = build_request(config, :put, "/auth", body)
 
     with {:ok, %Finch.Response{} = resp} <- make_request(config, request, opts) do
-      case Jason.decode(resp.body) do
-        {:ok, json} ->
-          {:ok, json}
-
-        {:error, _} ->
-          {:error, Error.http_status(resp.status)}
-      end
+      decode_json_response(resp)
     end
   end
 
@@ -29,15 +23,20 @@ defmodule CardConnectClient.GatewayAPI do
     request = build_request(config, :get, "/inquire/#{retref}/#{merchid}")
 
     with {:ok, %Finch.Response{} = resp} <- make_request(config, request, opts) do
-      case Jason.decode(resp.body) do
-        {:ok, json} ->
-          {:ok, json}
-
-        {:error, _} ->
-          {:error, Error.http_status(resp.status)}
-      end
+      decode_json_response(resp)
     end
   end
+
+  defp decode_json_response(%Finch.Response{status: status, body: body})
+       when status in 200..299 do
+    case Jason.decode(body) do
+      {:ok, json} -> {:ok, json}
+      {:error, _} -> {:error, Error.http_status(status)}
+    end
+  end
+
+  defp decode_json_response(%Finch.Response{status: status}),
+    do: {:error, Error.http_status(status)}
 
   defp build_request(config, method, path) do
     base_url = base_url_from_config(config)

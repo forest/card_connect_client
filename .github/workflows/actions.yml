@@ -20,8 +20,8 @@ jobs:
       matrix:
         include:
           - pair:
-              elixir: '1.12.x'
-              otp: '24.x'
+              elixir: '1.18.x'
+              otp: '28.x'
           - pair:
               elixir: '1.17.2'
               otp: '27.x'
@@ -31,7 +31,7 @@ jobs:
       new_release_version: ${{ steps.semantic.outputs.new_release_version }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
@@ -40,13 +40,13 @@ jobs:
           elixir-version: ${{matrix.pair.elixir}}
 
       - name: Restore dependencies cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
           path: deps
 
       - name: Restore build cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
           path: _build
