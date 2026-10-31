@@ -1,3 +1,10 @@
+## [0.6.2](https://github.com/forest/card_connect_client/compare/v0.6.1...v0.6.2) (2026-10-31)
+
+
+### Bug Fixes
+
+* return error for non-2xx gateway responses (#4) ([cdb166d](https://github.com/forest/card_connect_client/commit/cdb166d90d8eb3b30024d5aa8ec195da7554b59e)), closes [#4](https://github.com/forest/card_connect_client/issues/4)
+
 ## [0.6.1](https://github.com/forest/card_connect_client/compare/v0.6.0...v0.6.1) (2024-08-31)
 
 
