@@ -1,3 +1,10 @@
+# [0.7.0](https://github.com/forest/card_connect_client/compare/v0.6.2...v0.7.0) (2026-11-26)
+
+
+### Features
+
+* add inquire by order id (#5) ([6fe8f11](https://github.com/forest/card_connect_client/commit/6fe8f115ce4abe3327af484b5ae482d0d74e7614)), closes [#5](https://github.com/forest/card_connect_client/issues/5)
+
 ## [0.6.2](https://github.com/forest/card_connect_client/compare/v0.6.1...v0.6.2) (2026-10-31)
 
 
