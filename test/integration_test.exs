@@ -117,6 +117,42 @@ defmodule IntegrationTest do
     end
   end
 
+  describe "inquire by order id" do
+    test "returns every transaction for the order id", %{gateway_options: opts} do
+      start_supervised!({TestPaymentClient, []})
+
+      orderid = unique_order_id()
+      request = Map.put(trxn_request(), :orderid, orderid)
+
+      assert {:ok, %{"retref" => first, "merchid" => merchid}} =
+               TestPaymentClient.authorize_transaction(request, opts)
+
+      assert {:ok, [%{"retref" => ^first, "orderId" => ^orderid, "setlstat" => "Authorized"}]} =
+               TestPaymentClient.inquire_by_order_id(orderid, merchid, opts)
+
+      assert {:ok, %{"retref" => second}} = TestPaymentClient.authorize_transaction(request, opts)
+
+      assert {:ok, transactions} = TestPaymentClient.inquire_by_order_id(orderid, merchid, opts)
+      assert Enum.sort(Enum.map(transactions, & &1["retref"])) == Enum.sort([first, second])
+    end
+
+    test "returns an empty list for an unknown order id", %{gateway_options: opts} do
+      start_supervised!({TestPaymentClient, []})
+
+      assert {:ok, []} =
+               TestPaymentClient.inquire_by_order_id(
+                 unique_order_id(),
+                 "800000009033",
+                 opts
+               )
+    end
+  end
+
+  # The gateway masks long digit runs in an orderid as possible card numbers,
+  # and the masked orderid no longer matches, so use letters.
+  defp unique_order_id,
+    do: "test-" <> Base.encode32(:crypto.strong_rand_bytes(10), padding: false)
+
   defp trxn_request,
     do: %{
       merchid: "800000009033",

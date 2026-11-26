@@ -27,6 +27,23 @@ defmodule CardConnectClient.GatewayAPI do
     end
   end
 
+  # `set` 1 restricts the lookup to `merchid`.
+  def inquire_by_order_id(config, orderid, merchid, opts \\ []) do
+    orderid = URI.encode(orderid, &URI.char_unreserved?/1)
+    request = build_request(config, :get, "/inquireByOrderid/#{orderid}/#{merchid}/1")
+
+    with {:ok, %Finch.Response{} = resp} <- make_request(config, request, opts),
+         {:ok, json} <- decode_json_response(resp) do
+      {:ok, transactions_from_json(json)}
+    end
+  end
+
+  # The gateway returns one object for a single match, a list for several,
+  # and a PPS 29 "Txn not found" object for none.
+  defp transactions_from_json(%{"respproc" => "PPS", "respcode" => "29"}), do: []
+  defp transactions_from_json(json) when is_list(json), do: json
+  defp transactions_from_json(json), do: [json]
+
   defp decode_json_response(%Finch.Response{status: status, body: body})
        when status in 200..299 do
     case Jason.decode(body) do

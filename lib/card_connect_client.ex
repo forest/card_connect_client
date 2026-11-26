@@ -94,6 +94,32 @@ defmodule CardConnectClient do
     GatewayClient.inquire(gateway_client_name(name), retref, merchid, gateway_options!(opts))
   end
 
+  @doc """
+  Looks up transactions by the `orderid` sent in the original authorization
+  request, restricted to `merchid`. Use it when an authorization returned no
+  response, and so no `retref`.
+
+  Returns `{:ok, transactions}`, a list of inquire responses in no
+  guaranteed order. The list is empty when the gateway has no transaction
+  with that `orderid` (PPS respcode 29, "Txn not found").
+
+  The gateway may mask a long run of digits in an `orderid` as a possible
+  card number when it stores the authorization, after which this lookup
+  cannot find it. Keep digit runs in order IDs short.
+
+  ## Gateway Configurations
+
+  #{NimbleOptions.docs(@gateway_config_schema)}
+  """
+  def inquire_by_order_id(name, orderid, merchid, opts) do
+    GatewayClient.inquire_by_order_id(
+      gateway_client_name(name),
+      orderid,
+      merchid,
+      gateway_options!(opts)
+    )
+  end
+
   defp gateway_options!(opts) do
     case NimbleOptions.validate(opts, @gateway_config_schema) do
       {:ok, valid} ->
@@ -137,6 +163,9 @@ defmodule CardConnectClient do
 
       def inquire(retref, merchid, opts),
         do: CardConnectClient.inquire(__MODULE__, retref, merchid, opts)
+
+      def inquire_by_order_id(orderid, merchid, opts),
+        do: CardConnectClient.inquire_by_order_id(__MODULE__, orderid, merchid, opts)
     end
   end
 end
