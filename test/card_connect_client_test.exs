@@ -104,6 +104,46 @@ defmodule CardConnectClientTest do
     end
   end
 
+  describe "inquire by order id" do
+    setup %{bypass: bypass} do
+      start_supervised!({TestPaymentClient, []})
+
+      respond = fn body ->
+        Bypass.expect_once(bypass, "GET", "/inquireByOrderid/order%201/800000009033/1", fn conn ->
+          send_json(conn, 200, body)
+        end)
+      end
+
+      {:ok, respond: respond}
+    end
+
+    test "wraps a single match in a list", %{respond: respond, gateway_options: opts} do
+      respond.(%{"retref" => "1", "orderId" => "order 1"})
+
+      assert {:ok, [%{"retref" => "1"}]} =
+               TestPaymentClient.inquire_by_order_id("order 1", "800000009033", opts)
+    end
+
+    test "returns every match", %{respond: respond, gateway_options: opts} do
+      respond.([%{"retref" => "2"}, %{"retref" => "1"}])
+
+      assert {:ok, [%{"retref" => "2"}, %{"retref" => "1"}]} =
+               TestPaymentClient.inquire_by_order_id("order 1", "800000009033", opts)
+    end
+
+    test "returns an empty list when not found", %{respond: respond, gateway_options: opts} do
+      respond.(%{
+        "respproc" => "PPS",
+        "resptext" => "Txn not found",
+        "retref" => "order 1",
+        "respcode" => "29",
+        "respstat" => "C"
+      })
+
+      assert {:ok, []} = TestPaymentClient.inquire_by_order_id("order 1", "800000009033", opts)
+    end
+  end
+
   defp send_json(conn, status, body) do
     conn
     |> Plug.Conn.put_resp_content_type("application/json")

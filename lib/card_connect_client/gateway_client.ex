@@ -37,6 +37,10 @@ defmodule CardConnectClient.GatewayClient do
     GenServer.call(server, {:inquire, retref, merchid, opts}, @call_timeout)
   end
 
+  def inquire_by_order_id(server, orderid, merchid, opts) do
+    GenServer.call(server, {:inquire_by_order_id, orderid, merchid, opts}, @call_timeout)
+  end
+
   def handle_call({:check_credentials, body, opts}, _from, state) do
     response = GatewayAPI.check_credentials(gateway_config(opts, state), body)
 
@@ -55,6 +59,15 @@ defmodule CardConnectClient.GatewayClient do
   def handle_call({:inquire, retref, merchid, opts}, _from, state) do
     response =
       GatewayAPI.inquire(gateway_config(opts, state), retref, merchid,
+        receive_timeout: @gateway_timeout
+      )
+
+    {:reply, response, state}
+  end
+
+  def handle_call({:inquire_by_order_id, orderid, merchid, opts}, _from, state) do
+    response =
+      GatewayAPI.inquire_by_order_id(gateway_config(opts, state), orderid, merchid,
         receive_timeout: @gateway_timeout
       )
 
